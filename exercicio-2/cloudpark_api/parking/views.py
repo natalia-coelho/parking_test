@@ -1,3 +1,4 @@
+from django.forms import ValidationError
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from parking.models import Contract, Customer, ParkMovement, Plan, Vehicle
@@ -21,11 +22,10 @@ class VehicleViewSet(viewsets.ModelViewSet):
              return Response({"info": "O veículo já está cadastrado como rotativo. Link a um cliente se necessário!."})
        return super().create(request, *args, **kwargs)
       
-
 class PlanViewSet(viewsets.ModelViewSet):
     queryset = Plan.objects.all()
     serializer_class = PlanSerializer
-
+        
 class ContractViewSet(viewsets.ModelViewSet):
     queryset = Contract.objects.all()
     serializer_class = ContractSerializer
@@ -33,6 +33,17 @@ class ContractViewSet(viewsets.ModelViewSet):
 class ParkMovementViewSet(viewsets.ModelViewSet):
     queryset = ParkMovement.objects.all()
     serializer_class = ParkMovementSerializer
+    
+    def perform_create(self, serializer):
+        vehicle = serializer.validated_data.get('vehicle_id')
+        
+        if not vehicle.plate:
+            raise ValidationError("Veículo deve ter uma placa válida.")
+        
+        vehicle.in_parking = True
+        vehicle.save()
+        
+        serializer.save() 
     
 class CustomerViewSet(viewsets.ModelViewSet):
     queryset = Customer.objects.all()

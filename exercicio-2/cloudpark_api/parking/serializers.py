@@ -53,3 +53,14 @@ class ParkMovementSerializer(serializers.ModelSerializer):
     class Meta:
         model = ParkMovement
         fields = '__all__'
+        
+    def validate(self, data):
+        vehicle = data.get('vehicle_id')
+        
+        if not vehicle or not vehicle.plate:
+            raise serializers.ValidationError("Veículo deve ter uma placa válida.")
+        
+        if vehicle.in_parking:
+            raise serializers.ValidationError("Veículo já existe no estacionamento.")
+        
+        return data

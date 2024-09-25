@@ -11,6 +11,10 @@ class Customer(models.Model):
     email = models.EmailField()
     card_id = models.CharField(max_length=50, unique=True)
 
+    @property
+    def has_plan(self):
+        return CustomerPlan.objects.filter(customer_id=self, due_date__gte=timezone.now()).exists()
+    
 class Vehicle(models.Model):
     objects = models.Manager()
     id = models.AutoField(primary_key=True)
@@ -18,6 +22,7 @@ class Vehicle(models.Model):
     model = models.CharField(max_length=30, null=True)
     description = models.CharField(max_length=255, default='')
     customer_id = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True)
+    in_parking = models.BooleanField(default=False)
 
 class Plan(models.Model):
     objects = models.Manager()
