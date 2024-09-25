@@ -1,6 +1,6 @@
 # Parking System API
 
-This project is a **Parking Management System** built using **Django** for the back-end. It allows you to manage customers, vehicles, parking plans, contracts, and parking movements.
+This project is a Parking Management System built using Django for the back-end. It allows you to manage customers, vehicles, parking plans, contracts, and parking movements.
 
 ## Technologies Used
 - **Python** (v3.12.5)
